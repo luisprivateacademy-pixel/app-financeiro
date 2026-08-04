@@ -1554,6 +1554,330 @@ body::after {
   margin-top: 4px;
 }
 
+/* ============ DASHBOARD V3 - GRÁFICOS RICOS ============ */
+
+/* Alerta de vencimentos */
+.alert-card {
+  margin: 0 20px 16px;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(248,113,113,0.12) 0%, rgba(251,191,36,0.06) 100%);
+  border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248,113,113,0.15); }
+  50% { box-shadow: 0 0 0 6px rgba(248,113,113,0); }
+}
+.alert-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.alert-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(248,113,113,0.2);
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.alert-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--red);
+  letter-spacing: -0.01em;
+}
+.alert-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+.alert-bill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 10px;
+  font-size: 12px;
+}
+.alert-bill-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  margin-right: 8px;
+}
+.alert-bill-days {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--red-bg);
+  color: var(--red);
+  margin-right: 8px;
+  white-space: nowrap;
+}
+.alert-bill-days.hoje { background: rgba(248,113,113,0.3); animation: blink 1.5s ease-in-out infinite; }
+.alert-bill-days.urgente { background: var(--amber-bg); color: var(--amber); }
+@keyframes blink { 50% { opacity: 0.5; } }
+.alert-bill-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Comparação mês vs mês */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+.compare-card {
+  padding: 14px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.compare-card.up {
+  border-color: rgba(248,113,113,0.25);
+  background: linear-gradient(135deg, rgba(248,113,113,0.08), transparent 60%);
+}
+.compare-card.down {
+  border-color: rgba(74,222,128,0.25);
+  background: linear-gradient(135deg, rgba(74,222,128,0.08), transparent 60%);
+}
+.compare-label {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.compare-value {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.compare-var {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.compare-var.up { background: rgba(248,113,113,0.15); color: var(--red); }
+.compare-var.down { background: rgba(74,222,128,0.15); color: var(--green); }
+.compare-var.same { background: var(--bg-3); color: var(--text-muted); }
+
+/* Cards de dashboard */
+.dash-section {
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+.dash-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+.dash-section-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.dash-section-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.chart-wrap {
+  padding: 16px 12px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  position: relative;
+}
+.chart-container {
+  position: relative;
+  height: 200px;
+  width: 100%;
+}
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+.chart-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 99px;
+}
+
+/* Top 5 gastos */
+.top-list {
+  padding: 14px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+.top-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.top-item:last-child { border-bottom: none; }
+.top-rank {
+  width: 24px;
+  height: 24px;
+  border-radius: 99px;
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+.top-item:nth-child(1) .top-rank { background: rgba(196,255,71,0.2); color: var(--accent); }
+.top-item:nth-child(2) .top-rank { background: rgba(167,139,250,0.2); color: var(--purple); }
+.top-item:nth-child(3) .top-rank { background: rgba(96,165,250,0.2); color: var(--blue); }
+.top-body {
+  flex: 1;
+  min-width: 0;
+}
+.top-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text);
+}
+.top-cat {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+.top-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* Hero balance card */
+.dash-hero {
+  margin: 0 20px 20px;
+  padding: 22px 22px;
+  background: linear-gradient(145deg, rgba(196,255,71,0.06) 0%, rgba(167,139,250,0.03) 100%);
+  border: 1px solid var(--border-strong);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.dash-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -30%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--accent-dim), transparent 70%);
+  pointer-events: none;
+}
+.hero-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+  position: relative;
+}
+.hero-value {
+  font-family: var(--display);
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  position: relative;
+}
+.hero-value .currency {
+  font-size: 16px;
+  color: var(--text-dim);
+  margin-right: 4px;
+  vertical-align: super;
+  font-family: var(--mono);
+  font-weight: 500;
+}
+.hero-value .cents {
+  font-size: 18px;
+  color: var(--text-dim);
+}
+.hero-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  position: relative;
+}
+
+.dash-empty {
+  text-align: center;
+  padding: 30px 20px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
 </style>
 </head>
 <body>
@@ -1679,31 +2003,75 @@ body::after {
     <div class="list" id="dailyList"></div>
   </div>
 
-  <!-- ============ PAGE: DASHBOARD ============ -->
+  <!-- ============ PAGE: DASHBOARD (V3) ============ -->
   <div class="page" id="pageDash">
-    <div class="dash-grid" style="margin-top: 4px;">
-      <div class="dash-card wide">
-        <div class="dash-card-label">💰 Balanço do mês</div>
-        <div class="dash-card-value big" id="dashBalance">R$ 0</div>
-        <div class="dash-card-sub" id="dashBalanceSub">Contas + gastos diários</div>
+
+    <!-- Alerta de contas vencendo -->
+    <div id="dashAlert"></div>
+
+    <!-- Hero: balanço total -->
+    <div class="dash-hero">
+      <div class="hero-label">Balanço do mês</div>
+      <div class="hero-value">
+        <span class="currency">R$</span><span id="dashHeroValue">0</span><span class="cents" id="dashHeroCents">,00</span>
       </div>
-      <div class="dash-card">
-        <div class="dash-card-label">📄 Contas</div>
-        <div class="dash-card-value" id="dashBills">R$ 0</div>
+      <div class="hero-sub" id="dashHeroSub">— contas · — gastos</div>
+    </div>
+
+    <!-- Comparação vs mês passado -->
+    <div class="compare-grid" id="dashCompareGrid">
+      <div class="compare-card" id="compareBills">
+        <div class="compare-label">📄 Contas</div>
+        <div class="compare-value" id="compareBillsValue">R$ 0</div>
+        <div class="compare-var same" id="compareBillsVar">— vs mês passado</div>
       </div>
-      <div class="dash-card">
-        <div class="dash-card-label">🧾 Gastos</div>
-        <div class="dash-card-value" id="dashDaily">R$ 0</div>
-      </div>
-      <div class="dash-card wide">
-        <div class="dash-card-label">📊 Por categoria</div>
-        <div id="dashCategories" style="margin-top: 8px;"></div>
-      </div>
-      <div class="dash-card wide">
-        <div class="dash-card-label">📈 Últimos 3 meses</div>
-        <div id="dashHistory" style="margin-top: 8px;"></div>
+      <div class="compare-card" id="compareDaily">
+        <div class="compare-label">🧾 Gastos diários</div>
+        <div class="compare-value" id="compareDailyValue">R$ 0</div>
+        <div class="compare-var same" id="compareDailyVar">— vs mês passado</div>
       </div>
     </div>
+
+    <!-- Gráfico evolução 6 meses -->
+    <div class="dash-section">
+      <div class="dash-section-head">
+        <div class="dash-section-title">Evolução</div>
+        <div class="dash-section-sub">Últimos 6 meses</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-container">
+          <canvas id="chartHistory"></canvas>
+        </div>
+        <div class="chart-legend">
+          <div class="chart-legend-item"><span class="chart-legend-dot" style="background:#c4ff47"></span> Contas</div>
+          <div class="chart-legend-item"><span class="chart-legend-dot" style="background:#a78bfa"></span> Gastos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top 5 gastos -->
+    <div class="dash-section">
+      <div class="dash-section-head">
+        <div class="dash-section-title">Top 5 gastos</div>
+        <div class="dash-section-sub">Deste mês</div>
+      </div>
+      <div class="top-list" id="dashTop5"></div>
+    </div>
+
+    <!-- Por categoria (donut chart) -->
+    <div class="dash-section">
+      <div class="dash-section-head">
+        <div class="dash-section-title">Por categoria</div>
+        <div class="dash-section-sub">Distribuição</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-container">
+          <canvas id="chartCategories"></canvas>
+        </div>
+        <div class="chart-legend" id="chartCategoriesLegend"></div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -2000,8 +2368,9 @@ body::after {
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- ============ SUPABASE ============ -->
+<!-- ============ SUPABASE + CHART.JS ============ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <script>
 // =================================================================
@@ -2561,21 +2930,319 @@ function renderDiario() {
   });
 }
 
-// -------- DASHBOARD --------
+// -------- DASHBOARD V3 --------
+let chartHistoryInstance = null;
+let chartCategoriesInstance = null;
+
+// Config global do Chart.js (dark theme)
+function setupChartDefaults() {
+  if (typeof Chart === 'undefined') return;
+  Chart.defaults.font.family = 'Manrope, sans-serif';
+  Chart.defaults.color = '#8a8a96';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.06)';
+}
+
 function renderDash() {
+  setupChartDefaults();
+  renderDashAlert();
+  renderDashHero();
+  renderDashCompare();
+  renderDashHistoryChart();
+  renderDashTop5();
+  renderDashCategoriesChart();
+}
+
+// --- Alerta de contas vencendo em 7 dias ---
+function renderDashAlert() {
+  const alertEl = $('dashAlert');
+  const now = realToday();
+  const currentKey = monthKey(now);
+  const nextKey = addMonths(currentKey, 1);
+  const today = now.getDate();
+  const { year, month } = parseMonthKey(currentKey);
+  const daysInMonth = new Date(year, month, 0).getDate();
+
+  // Encontra contas do mês atual OU próximo, com dia entre hoje e hoje+7, ainda não pagas
+  const upcoming = [];
+  const bills = state.bills.filter(b =>
+    (b.month_key === currentKey || b.month_key === nextKey) &&
+    (b.status === 'pending' || b.status === 'partial' || b.status === 'overdue')
+  );
+
+  for (const b of bills) {
+    let daysUntil = null;
+    if (b.month_key === currentKey) {
+      daysUntil = b.day - today;
+    } else if (b.month_key === nextKey) {
+      // Dias que faltam pro fim do mês + dia da conta no próximo mês
+      daysUntil = (daysInMonth - today) + b.day;
+    }
+    if (daysUntil !== null && daysUntil >= 0 && daysUntil <= 7) {
+      upcoming.push({ ...b, daysUntil });
+    }
+    // Também inclui atrasadas do mês atual como "hoje" (0 dias, urgente!)
+    if (b.status === 'overdue' && b.month_key === currentKey) {
+      if (!upcoming.find(x => x.id === b.id)) {
+        upcoming.push({ ...b, daysUntil: -1 }); // -1 = atrasada
+      }
+    }
+  }
+
+  if (upcoming.length === 0) {
+    alertEl.innerHTML = '';
+    return;
+  }
+
+  upcoming.sort((a, b) => a.daysUntil - b.daysUntil);
+
+  alertEl.innerHTML = `
+    <div class="alert-card">
+      <div class="alert-head">
+        <div class="alert-icon">⚠️</div>
+        <div>
+          <div class="alert-title">${upcoming.length} ${upcoming.length === 1 ? 'conta próxima' : 'contas próximas'}</div>
+          <div class="alert-sub">Vencendo nos próximos 7 dias</div>
+        </div>
+      </div>
+      <div class="alert-list">
+        ${upcoming.slice(0, 5).map(b => {
+          let daysLabel, daysClass;
+          if (b.daysUntil < 0) { daysLabel = 'ATRASADA'; daysClass = 'hoje'; }
+          else if (b.daysUntil === 0) { daysLabel = 'HOJE'; daysClass = 'hoje'; }
+          else if (b.daysUntil <= 2) { daysLabel = b.daysUntil + 'd'; daysClass = 'urgente'; }
+          else { daysLabel = b.daysUntil + 'd'; daysClass = ''; }
+          return `
+            <div class="alert-bill">
+              <span class="alert-bill-name">${escapeHtml(b.name)}</span>
+              <span class="alert-bill-days ${daysClass}">${daysLabel}</span>
+              <span class="alert-bill-value">R$ ${fmtMoney(b.value)}</span>
+            </div>
+          `;
+        }).join('')}
+        ${upcoming.length > 5 ? `<div style="text-align:center;font-size:11px;color:var(--text-muted);padding-top:6px;">+${upcoming.length - 5} mais</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// --- Hero: balanço do mês ---
+function renderDashHero() {
   const bills = getMonthBills(state.currentMonth);
   const daily = getMonthDaily(state.currentMonth);
-
   const billsTotal = bills.reduce((s, b) => s + Number(b.value||0), 0);
   const dailyTotal = daily.reduce((s, d) => s + Number(d.value||0), 0);
   const total = billsTotal + dailyTotal;
 
-  $('dashBalance').textContent = fmtMoneyShort(total);
-  $('dashBills').textContent = fmtMoneyShort(billsTotal);
-  $('dashDaily').textContent = fmtMoneyShort(dailyTotal);
-  $('dashBalanceSub').textContent = `${bills.length} contas · ${daily.length} gastos`;
+  const [intPart, decPart] = fmtMoney(total).split(',');
+  $('dashHeroValue').textContent = intPart;
+  $('dashHeroCents').textContent = ',' + decPart;
+  $('dashHeroSub').textContent = `${bills.length} ${bills.length === 1 ? 'conta' : 'contas'} · ${daily.length} ${daily.length === 1 ? 'gasto' : 'gastos'}`;
+}
 
-  // Por categoria
+// --- Comparação mês atual vs mês anterior ---
+function renderDashCompare() {
+  const currentBills = getMonthBills(state.currentMonth).reduce((s,b) => s + Number(b.value||0), 0);
+  const currentDaily = getMonthDaily(state.currentMonth).reduce((s,d) => s + Number(d.value||0), 0);
+
+  const prevKey = addMonths(state.currentMonth, -1);
+  const prevBills = getMonthBills(prevKey).reduce((s,b) => s + Number(b.value||0), 0);
+  const prevDaily = getMonthDaily(prevKey).reduce((s,d) => s + Number(d.value||0), 0);
+
+  updateCompareCard('compareBills', 'compareBillsValue', 'compareBillsVar', currentBills, prevBills);
+  updateCompareCard('compareDaily', 'compareDailyValue', 'compareDailyVar', currentDaily, prevDaily);
+}
+
+function updateCompareCard(cardId, valueId, varId, current, previous) {
+  const card = $(cardId);
+  const valueEl = $(valueId);
+  const varEl = $(varId);
+
+  valueEl.textContent = fmtMoneyShort(current);
+
+  card.classList.remove('up','down');
+
+  if (previous === 0 && current === 0) {
+    varEl.className = 'compare-var same';
+    varEl.textContent = 'sem dados anteriores';
+    return;
+  }
+  if (previous === 0) {
+    varEl.className = 'compare-var up';
+    varEl.innerHTML = `<span>↑</span> novo`;
+    card.classList.add('up');
+    return;
+  }
+
+  const diff = current - previous;
+  const pct = Math.abs(Math.round((diff / previous) * 100));
+
+  if (Math.abs(diff) < 0.01) {
+    varEl.className = 'compare-var same';
+    varEl.textContent = '= igual ao mês passado';
+  } else if (diff > 0) {
+    varEl.className = 'compare-var up';
+    varEl.innerHTML = `<span>↑</span> ${pct}% a mais`;
+    card.classList.add('up');
+  } else {
+    varEl.className = 'compare-var down';
+    varEl.innerHTML = `<span>↓</span> ${pct}% a menos`;
+    card.classList.add('down');
+  }
+}
+
+// --- Gráfico de linha: histórico 6 meses ---
+function renderDashHistoryChart() {
+  if (typeof Chart === 'undefined') return;
+
+  const canvas = $('chartHistory');
+  if (!canvas) return;
+
+  const labels = [];
+  const billsData = [];
+  const dailyData = [];
+
+  for (let i = -5; i <= 0; i++) {
+    const mk = addMonths(state.currentMonth, i);
+    const mBills = getMonthBills(mk).reduce((s,b) => s + Number(b.value||0), 0);
+    const mDaily = getMonthDaily(mk).reduce((s,d) => s + Number(d.value||0), 0);
+    const { year, month } = parseMonthKey(mk);
+    labels.push(`${MESES_ABREV[month-1]}/${String(year).slice(-2)}`);
+    billsData.push(mBills);
+    dailyData.push(mDaily);
+  }
+
+  // Destroi instância anterior (evita memory leak)
+  if (chartHistoryInstance) {
+    chartHistoryInstance.destroy();
+    chartHistoryInstance = null;
+  }
+
+  const ctx = canvas.getContext('2d');
+  const gradientAccent = ctx.createLinearGradient(0, 0, 0, 200);
+  gradientAccent.addColorStop(0, 'rgba(196,255,71,0.3)');
+  gradientAccent.addColorStop(1, 'rgba(196,255,71,0)');
+  const gradientPurple = ctx.createLinearGradient(0, 0, 0, 200);
+  gradientPurple.addColorStop(0, 'rgba(167,139,250,0.25)');
+  gradientPurple.addColorStop(1, 'rgba(167,139,250,0)');
+
+  chartHistoryInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Contas',
+          data: billsData,
+          borderColor: '#c4ff47',
+          backgroundColor: gradientAccent,
+          borderWidth: 2.5,
+          pointBackgroundColor: '#c4ff47',
+          pointBorderColor: '#0a0a0f',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.35,
+          fill: true,
+        },
+        {
+          label: 'Gastos',
+          data: dailyData,
+          borderColor: '#a78bfa',
+          backgroundColor: gradientPurple,
+          borderWidth: 2.5,
+          pointBackgroundColor: '#a78bfa',
+          pointBorderColor: '#0a0a0f',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          tension: 0.35,
+          fill: true,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a24',
+          titleColor: '#e8e8ed',
+          bodyColor: '#e8e8ed',
+          borderColor: 'rgba(255,255,255,0.12)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          displayColors: true,
+          bodyFont: { family: 'JetBrains Mono, monospace', size: 11 },
+          titleFont: { family: 'Manrope, sans-serif', weight: '600', size: 12 },
+          callbacks: {
+            label: (ctx) => ` ${ctx.dataset.label}: R$ ${fmtMoney(ctx.parsed.y)}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 10 }, color: '#8a8a96' }
+        },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            font: { size: 10 }, color: '#8a8a96',
+            callback: (v) => v >= 1000 ? 'R$ ' + (v/1000).toFixed(1) + 'k' : 'R$ ' + v
+          },
+          beginAtZero: true,
+        }
+      },
+      interaction: { mode: 'index', intersect: false },
+    }
+  });
+}
+
+// --- Top 5 gastos individuais ---
+function renderDashTop5() {
+  const bills = getMonthBills(state.currentMonth).map(b => ({
+    name: b.name, value: Number(b.value||0), category: b.category, type: 'bill'
+  }));
+  const daily = getMonthDaily(state.currentMonth).map(d => ({
+    name: d.description || d.category || 'Gasto', value: Number(d.value||0), category: d.category, type: 'daily'
+  }));
+
+  const all = [...bills, ...daily].sort((a,b) => b.value - a.value).slice(0, 5);
+  const list = $('dashTop5');
+
+  if (all.length === 0) {
+    list.innerHTML = '<div class="dash-empty">Sem gastos registrados neste mês</div>';
+    return;
+  }
+
+  list.innerHTML = all.map((item, idx) => {
+    const cat = state.categories.find(c => c.name === item.category);
+    const emoji = cat ? cat.emoji : (item.type === 'bill' ? '📄' : '🧾');
+    return `
+      <div class="top-item">
+        <div class="top-rank">${idx + 1}</div>
+        <div class="top-body">
+          <div class="top-name">${emoji} ${escapeHtml(item.name)}</div>
+          <div class="top-cat">${escapeHtml(item.category || 'Sem categoria')}</div>
+        </div>
+        <div class="top-value">R$ ${fmtMoney(item.value)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// --- Donut chart de categorias ---
+function renderDashCategoriesChart() {
+  if (typeof Chart === 'undefined') return;
+
+  const canvas = $('chartCategories');
+  if (!canvas) return;
+
+  const bills = getMonthBills(state.currentMonth);
+  const daily = getMonthDaily(state.currentMonth);
+
   const catTotals = {};
   for (const b of bills) {
     const cat = b.category || 'Outros';
@@ -2585,48 +3252,89 @@ function renderDash() {
     const cat = d.category || 'Outros';
     catTotals[cat] = (catTotals[cat] || 0) + Number(d.value||0);
   }
+
   const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
-  const maxCatValue = sortedCats.length > 0 ? sortedCats[0][1] : 1;
 
-  $('dashCategories').innerHTML = sortedCats.length === 0 ? '<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:12px;">Sem dados neste mês</div>' :
-    sortedCats.slice(0, 6).map(([cat, val]) => {
-      const catObj = state.categories.find(c => c.name === cat);
-      const emoji = catObj ? catObj.emoji : '📌';
-      const pct = Math.round((val / maxCatValue) * 100);
-      return `
-        <div style="margin-bottom: 10px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px;">
-            <span>${emoji} ${escapeHtml(cat)}</span>
-            <span style="font-family:var(--mono);font-weight:600;">${fmtMoneyShort(val)}</span>
-          </div>
-          <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;">
-            <div style="height:100%;background:linear-gradient(90deg, var(--accent), var(--purple));border-radius:99px;width:${pct}%"></div>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-  // Histórico últimos 3 meses
-  const history = [];
-  for (let i = -2; i <= 0; i++) {
-    const mk = addMonths(state.currentMonth, i);
-    const mBills = getMonthBills(mk).reduce((s,b) => s + Number(b.value||0), 0);
-    const mDaily = getMonthDaily(mk).reduce((s,d) => s + Number(d.value||0), 0);
-    const { year, month } = parseMonthKey(mk);
-    history.push({ label: `${MESES_ABREV[month-1]}/${String(year).slice(-2)}`, total: mBills + mDaily });
+  if (chartCategoriesInstance) {
+    chartCategoriesInstance.destroy();
+    chartCategoriesInstance = null;
   }
-  const maxHist = Math.max(...history.map(h => h.total), 1);
-  $('dashHistory').innerHTML = history.map(h => {
-    const pct = (h.total / maxHist) * 100;
+
+  if (sortedCats.length === 0) {
+    $('chartCategoriesLegend').innerHTML = '';
+    // canvas vazio
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  // Pega top 6, agrega o resto em "Outros"
+  const top6 = sortedCats.slice(0, 6);
+  const rest = sortedCats.slice(6);
+  if (rest.length > 0) {
+    const restSum = rest.reduce((s, [, v]) => s + v, 0);
+    // Se já tem "Outros" no top6, soma
+    const outrosIdx = top6.findIndex(([n]) => n === 'Outros');
+    if (outrosIdx >= 0) top6[outrosIdx][1] += restSum;
+    else top6.push([`+${rest.length} outras`, restSum]);
+  }
+
+  const palette = ['#c4ff47','#a78bfa','#60a5fa','#4ade80','#fbbf24','#f87171','#8a8a96'];
+  const labels = top6.map(([n]) => n);
+  const values = top6.map(([,v]) => v);
+  const colors = top6.map((_, i) => palette[i % palette.length]);
+
+  const ctx = canvas.getContext('2d');
+  chartCategoriesInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: values,
+        backgroundColor: colors,
+        borderColor: '#12121a',
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a24',
+          titleColor: '#e8e8ed',
+          bodyColor: '#e8e8ed',
+          borderColor: 'rgba(255,255,255,0.12)',
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          bodyFont: { family: 'JetBrains Mono, monospace', size: 11 },
+          titleFont: { family: 'Manrope, sans-serif', weight: '600', size: 12 },
+          callbacks: {
+            label: (ctx) => {
+              const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+              const pct = ((ctx.parsed / total) * 100).toFixed(1);
+              return ` R$ ${fmtMoney(ctx.parsed)} · ${pct}%`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Legenda customizada
+  const total = values.reduce((a,b)=>a+b,0);
+  $('chartCategoriesLegend').innerHTML = labels.map((label, i) => {
+    const cat = state.categories.find(c => c.name === label);
+    const emoji = cat ? cat.emoji : '';
+    const pct = ((values[i] / total) * 100).toFixed(0);
     return `
-      <div style="margin-bottom: 10px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px;">
-          <span style="color:var(--text-dim);">${h.label}</span>
-          <span style="font-family:var(--mono);font-weight:600;">${fmtMoneyShort(h.total)}</span>
-        </div>
-        <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;">
-          <div style="height:100%;background:linear-gradient(90deg, var(--blue), var(--accent));border-radius:99px;width:${pct}%"></div>
-        </div>
+      <div class="chart-legend-item">
+        <span class="chart-legend-dot" style="background:${colors[i]}"></span>
+        ${emoji} ${escapeHtml(label)} · ${pct}%
       </div>
     `;
   }).join('');
