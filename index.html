@@ -2977,7 +2977,7 @@ function renderDashAlert() {
       // Dias que faltam pro fim do mês + dia da conta no próximo mês
       daysUntil = (daysInMonth - today) + b.day;
     }
-    if (daysUntil !== null && daysUntil >= 0 && daysUntil <= 7) {
+    if (daysUntil !== null && daysUntil >= 0 && daysUntil <= 3) {
       upcoming.push({ ...b, daysUntil });
     }
     // Também inclui atrasadas do mês atual como "hoje" (0 dias, urgente!)
@@ -3001,7 +3001,7 @@ function renderDashAlert() {
         <div class="alert-icon">⚠️</div>
         <div>
           <div class="alert-title">${upcoming.length} ${upcoming.length === 1 ? 'conta próxima' : 'contas próximas'}</div>
-          <div class="alert-sub">Vencendo nos próximos 7 dias</div>
+          <div class="alert-sub">Vencendo nos próximos 3 dias</div>
         </div>
       </div>
       <div class="alert-list">
@@ -3009,8 +3009,8 @@ function renderDashAlert() {
           let daysLabel, daysClass;
           if (b.daysUntil < 0) { daysLabel = 'ATRASADA'; daysClass = 'hoje'; }
           else if (b.daysUntil === 0) { daysLabel = 'HOJE'; daysClass = 'hoje'; }
-          else if (b.daysUntil <= 2) { daysLabel = b.daysUntil + 'd'; daysClass = 'urgente'; }
-          else { daysLabel = b.daysUntil + 'd'; daysClass = ''; }
+          else if (b.daysUntil === 1) { daysLabel = 'AMANHÃ'; daysClass = 'urgente'; }
+          else { daysLabel = b.daysUntil + ' dias'; daysClass = 'urgente'; }
           return `
             <div class="alert-bill">
               <span class="alert-bill-name">${escapeHtml(b.name)}</span>
