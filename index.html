@@ -2339,6 +2339,10 @@ body::after {
       <div class="drawer-item-icon">🔔</div>
       <span id="notifItemLabel">Ativar notificações</span>
     </button>
+    <button class="drawer-item hidden" id="mTestNotif">
+      <div class="drawer-item-icon">🧪</div>
+      Testar notificação
+    </button>
 
     <div class="drawer-section">Sobre</div>
     <button class="drawer-item" id="mInfo">
@@ -3966,6 +3970,33 @@ function hideConfirm() {
 }
 
 // =================================================================
+// CURRENCY MASK - máscara automática pros inputs de valor
+// =================================================================
+function applyCurrencyMask(inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.addEventListener('input', (e) => {
+    let v = e.target.value.replace(/\D/g, '');
+    if (!v) { e.target.value = ''; return; }
+    v = (parseInt(v, 10) / 100).toFixed(2);
+    v = v.replace('.', ',');
+    v = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    e.target.value = v;
+  });
+  // Também mascara ao colar
+  input.addEventListener('paste', (e) => {
+    setTimeout(() => {
+      let v = e.target.value.replace(/\D/g, '');
+      if (!v) { e.target.value = ''; return; }
+      v = (parseInt(v, 10) / 100).toFixed(2);
+      v = v.replace('.', ',');
+      v = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      e.target.value = v;
+    }, 10);
+  });
+}
+
+// =================================================================
 // PUSH NOTIFICATIONS
 // =================================================================
 function urlBase64ToUint8Array(base64String) {
@@ -3988,18 +4019,60 @@ async function isPushEnabled() {
 
 async function updateNotifLabel() {
   const label = $('notifItemLabel');
+  const testBtn = $('mTestNotif');
   if (!label) return;
   if (!('Notification' in window)) {
     label.textContent = 'Notificações não suportadas';
+    if (testBtn) testBtn.classList.add('hidden');
     return;
   }
   const enabled = await isPushEnabled();
   if (enabled && Notification.permission === 'granted') {
     label.textContent = '✓ Notificações ativas';
+    if (testBtn) testBtn.classList.remove('hidden');
   } else if (Notification.permission === 'denied') {
     label.textContent = 'Notificações bloqueadas';
+    if (testBtn) testBtn.classList.add('hidden');
   } else {
     label.textContent = 'Ativar notificações';
+    if (testBtn) testBtn.classList.add('hidden');
+  }
+}
+
+async function testNotification() {
+  loading('Enviando teste...');
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      loadingHide();
+      toast('Sessão expirada, faz login de novo');
+      return;
+    }
+
+    const resp = await fetch('/api/test-notification', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await resp.json();
+    loadingHide();
+
+    if (!resp.ok) {
+      toast('Erro: ' + (data.error || 'falhou'));
+      return;
+    }
+
+    if (data.sent > 0) {
+      toast(`🔔 Enviado! Aguarda a notificação chegar...`);
+    } else {
+      toast('Nenhuma notificação enviada. Verifica os logs da Vercel.');
+    }
+  } catch (err) {
+    loadingHide();
+    toast('Erro de rede: ' + err.message);
   }
 }
 
@@ -4218,6 +4291,7 @@ function bindEvents() {
   $('mRecurring').onclick = () => { closeDrawer(); setTimeout(openRecList, 200); };
   $('mCategories').onclick = () => { closeDrawer(); setTimeout(openCatList, 200); };
   $('mNotifications').onclick = () => { closeDrawer(); setTimeout(toggleNotifications, 200); };
+  $('mTestNotif').onclick = () => { closeDrawer(); setTimeout(testNotification, 200); };
   $('mLogout').onclick = () => {
     closeDrawer();
     setTimeout(() => {
@@ -4234,6 +4308,11 @@ function bindEvents() {
   // Categorias
   $('newCatBtn').onclick = openNewCat;
   $('saveCatBtn').onclick = saveCat;
+
+  // Currency masks nos inputs de valor
+  applyCurrencyMask('fValue');
+  applyCurrencyMask('fPaid');
+  applyCurrencyMask('dValue');
 }
 
 function switchPage(pageId) {
