@@ -28,10 +28,8 @@ module.exports = async function handler(req, res) {
     const currentYear = now.getFullYear();
 
     const currentMonthKey = `${currentYear}-${String(currentMonth).padStart(2,'0')}`;
-
     const nextDate = new Date(currentYear, currentMonth, 1);
     const nextMonthKey = `${nextDate.getFullYear()}-${String(nextDate.getMonth()+1).padStart(2,'0')}`;
-
     const daysInCurrentMonth = new Date(currentYear, currentMonth, 0).getDate();
 
     const { data: bills, error: bErr } = await supabase
@@ -66,6 +64,20 @@ module.exports = async function handler(req, res) {
     }
 
     const userIds = Object.keys(byUser);
+
+    // Buscar nomes dos usuarios
+    const { data: profiles } = await supabase
+      .from('profiles')
+      .select('id, name')
+      .in('id', userIds);
+
+    const nameMap = {};
+    for (const p of profiles || []) {
+      const firstName = (p.name || '').split(' ')[0].trim() || 'voce';
+      nameMap[p.id] = firstName;
+    }
+
+    // Buscar subscriptions
     const { data: subs, error: sErr } = await supabase
       .from('push_subscriptions')
       .select('id, user_id, endpoint, p256dh, auth_key')
@@ -81,7 +93,8 @@ module.exports = async function handler(req, res) {
       const userSubs = (subs || []).filter(s => s.user_id === userId);
       if (userSubs.length === 0) continue;
 
-      const title = buildTitle(userBills);
+      const userName = nameMap[userId] || 'voce';
+      const title = buildTitle(userName);
       const body = buildBody(userBills);
 
       const payload = JSON.stringify({
@@ -132,28 +145,51 @@ module.exports = async function handler(req, res) {
   }
 };
 
-function buildTitle(bills) {
-  const hoje = bills.filter(b => b.daysUntil === 0);
-  if (hoje.length > 0) return `${hoje.length} conta(s) vencem HOJE`;
+function buildTitle(userName) {
+  return `Bom dia, ${userName}! ☀️`;
+}
 
-  const amanha = bills.filter(b => b.daysUntil === 1);
-  if (amanha.length > 0 && amanha.length === bills.length) return `Conta vence amanha`;
-
-  return `${bills.length} conta(s) proxima(s) do vencimento`;
+function fmtBRL(value) {
+  return Number(value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function buildBody(bills) {
   bills.sort((a, b) => a.daysUntil - b.daysUntil);
+
+  // 1 conta - mensagem detalhada no singular
+  if (bills.length === 1) {
+    const b = bills[0];
+    const value = fmtBRL(b.value);
+    let when;
+    if (b.daysUntil === 0) when = 'vence HOJE ⚠️';
+    else if (b.daysUntil === 1) when = 'vence amanhã ⏰';
+    else when = `vence em ${b.daysUntil} dias 📅`;
+    return `${b.name} R$ ${value} ${when}`;
+  }
+
+  // 2+ contas - resumo com lista
+  const hoje = bills.filter(b => b.daysUntil === 0).length;
+  const parts = [];
+
+  if (hoje > 0) {
+    parts.push(`⚠️ ${hoje} vence${hoje > 1 ? 'm' : ''} HOJE`);
+  } else {
+    parts.push(`📅 ${bills.length} contas próximas do vencimento`);
+  }
+
   const top = bills.slice(0, 3);
-  const parts = top.map(b => {
-    const value = Number(b.value || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  for (const b of top) {
+    const value = fmtBRL(b.value);
     let when;
     if (b.daysUntil === 0) when = 'hoje';
-    else if (b.daysUntil === 1) when = 'amanha';
+    else if (b.daysUntil === 1) when = 'amanhã';
     else when = `em ${b.daysUntil}d`;
-    return `${b.name} R$ ${value} · ${when}`;
-  });
-  let body = parts.join('\n');
-  if (bills.length > 3) body += `\n+${bills.length - 3} mais`;
-  return body;
+    parts.push(`${b.name} R$ ${value} · ${when}`);
+  }
+
+  if (bills.length > 3) {
+    parts.push(`+${bills.length - 3} mais`);
+  }
+
+  return parts.join('\n');
 }
