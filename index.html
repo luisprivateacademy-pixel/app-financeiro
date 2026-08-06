@@ -2099,17 +2099,31 @@ body::after {
       <div class="top-list" id="dashTop5"></div>
     </div>
 
-    <!-- Por categoria (donut chart) -->
+    <!-- Por categoria - Contas -->
     <div class="dash-section">
       <div class="dash-section-head">
-        <div class="dash-section-title">Por categoria</div>
-        <div class="dash-section-sub">Distribuição</div>
+        <div class="dash-section-title">Contas por categoria</div>
+        <div class="dash-section-sub">Fixas & parcelas</div>
       </div>
       <div class="chart-wrap">
         <div class="chart-container">
-          <canvas id="chartCategories"></canvas>
+          <canvas id="chartCategoriesBills"></canvas>
         </div>
-        <div class="chart-legend" id="chartCategoriesLegend"></div>
+        <div class="chart-legend" id="chartCategoriesBillsLegend"></div>
+      </div>
+    </div>
+
+    <!-- Por categoria - Gastos diários -->
+    <div class="dash-section">
+      <div class="dash-section-head">
+        <div class="dash-section-title">Gastos por categoria</div>
+        <div class="dash-section-sub">Diário</div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-container">
+          <canvas id="chartCategoriesDaily"></canvas>
+        </div>
+        <div class="chart-legend" id="chartCategoriesDailyLegend"></div>
       </div>
     </div>
 
@@ -2459,52 +2473,38 @@ const DIAS_SEMANA = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sá
 const DIAS_SEMANA_ABREV = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
 const EMOJI_LIST = [
-  // Financeiro & Símbolos
-  '📌','💰','💵','💴','💶','💷','💸','💳','💎','🪙','🏦','📊','📈','📉','🧾','🧮',
-  // Moradia & Casa
-  '🏠','🏡','🏢','🏘️','🛏️','🛋️','🪑','🚿','🛁','🚽','🪟','🪞','🚪','🔑','🗝️','🧹','🧽','🧴','🧻','🧺',
-  // Utilidades
-  '💡','💧','🔥','🌡️','🔌','🔋','🌐','📶','📡','🔧','🔨','⚙️','🪛','🪜','🧰',
-  // Comida principal
-  '🛒','🍕','🍔','🍟','🌭','🥪','🌮','🌯','🥙','🥗','🍜','🍝','🍱','🍣','🍙','🍚','🍛','🍤','🍲','🥘',
-  // Comida & Sobremesa
-  '🍰','🎂','🍩','🍪','🍿','🍦','🥧','🥐','🥖','🥯','🥨','🧀','🥞','🥚','🍳','🥓','🥩','🍖','🍗','🥟',
-  // Frutas & Vegetais
-  '🍎','🍌','🍊','🍇','🍓','🍉','🍑','🥑','🥕','🌽','🥔','🍅',
-  // Bebidas
-  '☕','🍵','🥤','🧃','🍺','🍻','🍷','🥂','🍸','🍹','🥛','🧉','🍾','🧋',
-  // Transporte
-  '🚗','🚕','🚙','🚌','🚎','🚓','🚑','🚒','🚚','🚛','🛻','🚜','🏍️','🛵','🚲','🛴','🚂','🚆','🚇','🚋',
-  // Combustível
-  '⛽','🛢️',
-  // Viagem
-  '✈️','🛫','🛬','🚁','⛵','🚤','🛳️','🏖️','🏔️','🗺️','🎫','🏨','🎢','🎡','🗽','🗼',
-  // Saúde
-  '⚕️','🏥','💊','💉','🩺','🩹','🩻','🧬','🦷','👁️',
-  // Fitness
-  '🏋️','🧘','🏃','🚴','🏊','🤸','🥊','⛳','🏂','🏄','🏇','🚵',
-  // Esportes
-  '⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥅','🥇','🥈','🥉','🏆','🎖️',
-  // Lazer & Entretenimento
-  '🎬','📺','🎮','🕹️','🎰','🎳','🎯','🎨','🎭','🎤','🎧','🎵','🎶','🎸','🎹','🎺','🎻','🥁','🎷','📸',
-  // Livros & Educação
-  '📚','📖','🎓','📝','✏️','📕','📗','📘','📙','📓','📔','📒','✒️','🖊️','🖍️','🖌️','📐','📏',
-  // Trabalho & Tech
-  '💼','👔','💻','🖥️','⌨️','🖱️','🖨️','📱','☎️','📞','📇','📎','🗂️','📁','📂','🗃️','📅','📆','🗓️','⏰',
-  // Comunicação
-  '📧','✉️','📬','📮','📢','📣','📻','📼','📀','💾','💿','🔊','🔔','🔕',
-  // Roupas & Beleza
-  '👕','👖','👗','👚','👘','👙','👠','👟','👞','👢','🎽','👒','🎩','🧢','🕶️','👓','👑','💍','💄','💋',
-  // Beleza & Cuidados
-  '💇','💅','💆','🧴','🪒','🧼','🪥',
-  // Pets
-  '🐕','🐈','🐇','🐦','🐟','🦜','🐾','🐢','🐹','🐦‍⬛',
-  // Presentes & Celebração
-  '🎁','🎉','🎊','🎈','💐','🎀','🎗️','🎂','🕯️','🎆','🎇',
-  // Símbolos & Marcadores
-  '🔔','⏰','⏱️','⏲️','🌟','⭐','✨','💫','🌈','☀️','🌙','☁️','🌸','🌹','🌻','🍀','🌵','🌴','🌲','🎄',
-  // Outros úteis
-  '🚬','🍬','🍭','🎲','🧩','♟️','🪁','🪀','🧸','🪅','🎠'
+  '📌','💰','💵','💴','💶','💷','💸','💳','💎','🪙','🏦','📊','📈','📉','🧾','🧮','💹','💱','💲','🤑',
+  '🏠','🏡','🏢','🏘️','🏚️','🏗️','🏭','🛏️','🛋️','🪑','🚿','🛁','🚽','🪟','🪞','🚪','🔑','🗝️','🧹','🧽',
+  '🧴','🧻','🧺','🪣','🧯','🪤','🧷','📮','🗑️','🛎️','💡','💧','🔥','🌡️','🔌','🔋','🌐','📶','📡','🔧',
+  '🔨','⚙️','🪛','🪜','🧰','🪚','⛏️','🔩','🪝','🧲','🛒','🍕','🍔','🍟','🌭','🥪','🌮','🌯','🥙','🥗',
+  '🍜','🍝','🍱','🍣','🍙','🍚','🍛','🍤','🍲','🥘','🍢','🍡','🥟','🍥','🍘','🍧','🥠','🥫','🍿','🍰',
+  '🎂','🧁','🍩','🍪','🍦','🥧','🍮','🍭','🍬','🍫','🍯','🥮','🥐','🥖','🥯','🥨','🧀','🥞','🥚','🍳',
+  '🥓','🥩','🍖','🍗','🍞','🫓','🧈','🍎','🍏','🍌','🍊','🍋','🍇','🍓','🍉','🍑','🥭','🍒','🍍','🥝',
+  '🥥','🍈','🍐','🍅','🫐','🍆','🌰','🥑','🥕','🌽','🥔','🥦','🥬','🌶️','🫑','🥒','🍄','🧄','🧅','🥜',
+  '🫘','☕','🍵','🥤','🧃','🍺','🍻','🍷','🥂','🍸','🍹','🥛','🧉','🍾','🧋','🍶','🫗','🫖','🚗','🚕',
+  '🚙','🚌','🚎','🚓','🚑','🚒','🚚','🚛','🛻','🚜','🏍️','🛵','🚲','🛴','🚂','🚆','🚇','🚋','🚝','🚞',
+  '🚊','🚟','🚄','🚅','🚈','🚉','🚡','🛺','⛽','🛢️','🚏','🛣️','🛤️','🚦','🚥','🅿️','✈️','🛫','🛬','🚁',
+  '🛸','⛵','🚤','🛥️','🛳️','⛴️','🚢','🛰️','🪂','🏖️','🏔️','🗺️','🎫','🎟️','🏨','🏩','⛱️','🗽','🗼','🏛️',
+  '🕍','🕋','⛩️','🕌','⛲','🌋','🏕️','🏞️','🌅','⚕️','🏥','💊','💉','🩺','🩹','🩻','🧬','🦷','👁️','🧠',
+  '🫀','🫁','🩸','🦠','🧫','🧪','🏋️','🧘','🏃','🚴','🏊','🤸','🥊','⛳','🏂','🏄','🏇','🚵','🤺','⛷️',
+  '🤼','🤽','🤾','🏌️','🎣','⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥅','🥇','🥈','🥉','🏆',
+  '🎖️','🏅','🎗️','🥎','🏹','🎬','📺','🎮','🕹️','🎰','🎳','🎯','🎨','🎭','🎤','🎧','🎵','🎶','🎸','🎹',
+  '🎺','🎻','🥁','🎷','📸','🎼','🎙️','🪗','🪘','🎪','🃏','🎴','🀄','📚','📖','🎓','📝','✏️','📕','📗',
+  '📘','📙','📓','📔','📒','✒️','🖊️','🖍️','🖌️','📐','📏','📜','📃','📄','📑','📰','🗞️','📇','🔖','🏷️',
+  '💼','👔','💻','🖥️','⌨️','🖱️','🖨️','📱','☎️','📞','💾','💿','📀','📷','📹','🎥','📼','🔍','🔎','🔬',
+  '🔭','📽️','🎞️','📎','🗂️','📁','📂','🗃️','📅','📆','🗓️','⏰','⏱️','⏲️','🕰️','⌛','⏳','📋','📧','✉️',
+  '📬','📢','📣','📯','📻','📳','📴','🔊','🔉','🔈','🔇','🔔','🔕','📤','📥','📩','📨','👕','👖','👗',
+  '👚','👘','👙','👠','👟','👞','👢','🎽','👒','🎩','🧢','🕶️','👓','👑','💍','💄','💋','🩱','🩲','🩳',
+  '🧣','🧤','🧦','🥻','🦺','👝','👛','👜','🎒','🛍️','💇','💅','💆','🪒','🧼','🪥','🪮','🪅','🪆','🐕',
+  '🐈','🐇','🐦','🐟','🦜','🐾','🐢','🐹','🦎','🐍','🐴','🐎','🐄','🐖','🐑','🐐','🦆','🐔','🦃','🐿️',
+  '🦔','🦉','🐝','🦋','🕷️','🐌','🐞','🦀','🐙','🐬','🐳','🦈','🐊','🎁','🎉','🎊','🎈','💐','🎀','🕯️',
+  '🎆','🎇','🧨','🎐','🎏','🎎','🎋','🎍','🌟','⭐','✨','💫','🌈','☀️','🌙','⛅','☁️','🌤️','⛈️','🌩️',
+  '🌨️','❄️','☔','☂️','💦','💨','🌀','🌫️','🌊','⛰️','🗻','🏝️','🏜️','🌸','🌹','🌻','🌼','🌷','🍀','🌵',
+  '🌴','🌲','🎄','🌳','🌱','🌿','☘️','🍁','🍂','🍃','🪴','🌾','💯','💥','💢','💤','🚀','🌠','🚬','🎲',
+  '🧩','♟️','🪁','🪀','🧸','🎠','🎡','🎢','😊','😃','😢','😱','😴','🤔','😎','🤩','🥳','😷','🤒','🤕',
+  '🥴','🤯','😰','😅','🙌','👏','💪','🙏','⬆️','⬇️','⬅️','➡️','↗️','↘️','↙️','↖️','🔼','🔽','◀️','▶️',
+  '⤴️','⤵️','🔀','🔁','🔂','↩️','↪️','🔃','🅰️','🅱️','🆎','🆑','🆒','🆓','🆔','🆕','🆖','🆗','🆘','🆙',
+  '🆚','🔠','🔡','🔢','🔣','🔤','#️⃣','*️⃣'
 ];
 
 // =================================================================
@@ -3045,7 +3045,6 @@ function renderDiario() {
 
 // -------- DASHBOARD V3 --------
 let chartHistoryInstance = null;
-let chartCategoriesInstance = null;
 
 // Config global do Chart.js (dark theme)
 function setupChartDefaults() {
@@ -3346,47 +3345,67 @@ function renderDashTop5() {
   }).join('');
 }
 
-// --- Donut chart de categorias ---
+// --- Donut charts de categorias (SEPARADOS: Contas + Diários) ---
+let chartCategoriesBillsInstance = null;
+let chartCategoriesDailyInstance = null;
+
 function renderDashCategoriesChart() {
   if (typeof Chart === 'undefined') return;
-
-  const canvas = $('chartCategories');
-  if (!canvas) return;
 
   const bills = getMonthBills(state.currentMonth);
   const daily = getMonthDaily(state.currentMonth);
 
-  const catTotals = {};
-  for (const b of bills) {
-    const cat = b.category || 'Outros';
-    catTotals[cat] = (catTotals[cat] || 0) + Number(b.value||0);
-  }
-  for (const d of daily) {
-    const cat = d.category || 'Outros';
-    catTotals[cat] = (catTotals[cat] || 0) + Number(d.value||0);
-  }
+  // Renderiza gráfico de CONTAS
+  renderSingleCategoryChart({
+    canvasId: 'chartCategoriesBills',
+    legendId: 'chartCategoriesBillsLegend',
+    items: bills,
+    valueField: 'value',
+    instanceRef: 'chartCategoriesBillsInstance',
+  });
 
+  // Renderiza gráfico de GASTOS DIÁRIOS
+  renderSingleCategoryChart({
+    canvasId: 'chartCategoriesDaily',
+    legendId: 'chartCategoriesDailyLegend',
+    items: daily,
+    valueField: 'value',
+    instanceRef: 'chartCategoriesDailyInstance',
+  });
+}
+
+function renderSingleCategoryChart({ canvasId, legendId, items, valueField, instanceRef }) {
+  const canvas = $(canvasId);
+  if (!canvas) return;
+
+  // Agrega por categoria
+  const catTotals = {};
+  for (const it of items) {
+    const cat = it.category || 'Outros';
+    catTotals[cat] = (catTotals[cat] || 0) + Number(it[valueField] || 0);
+  }
   const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
 
-  if (chartCategoriesInstance) {
-    chartCategoriesInstance.destroy();
-    chartCategoriesInstance = null;
+  // Destroi instância anterior
+  if (window[instanceRef]) {
+    window[instanceRef].destroy();
+    window[instanceRef] = null;
   }
 
+  const legendEl = $(legendId);
+
   if (sortedCats.length === 0) {
-    $('chartCategoriesLegend').innerHTML = '';
-    // canvas vazio
+    if (legendEl) legendEl.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;width:100%;padding:8px;">Sem dados neste mês</div>';
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     return;
   }
 
-  // Pega top 6, agrega o resto em "Outros"
+  // Pega top 6, agrega o resto em "Outras"
   const top6 = sortedCats.slice(0, 6);
   const rest = sortedCats.slice(6);
   if (rest.length > 0) {
     const restSum = rest.reduce((s, [, v]) => s + v, 0);
-    // Se já tem "Outros" no top6, soma
     const outrosIdx = top6.findIndex(([n]) => n === 'Outros');
     if (outrosIdx >= 0) top6[outrosIdx][1] += restSum;
     else top6.push([`+${rest.length} outras`, restSum]);
@@ -3398,7 +3417,7 @@ function renderDashCategoriesChart() {
   const colors = top6.map((_, i) => palette[i % palette.length]);
 
   const ctx = canvas.getContext('2d');
-  chartCategoriesInstance = new Chart(ctx, {
+  window[instanceRef] = new Chart(ctx, {
     type: 'doughnut',
     data: {
       labels,
@@ -3440,17 +3459,19 @@ function renderDashCategoriesChart() {
 
   // Legenda customizada
   const total = values.reduce((a,b)=>a+b,0);
-  $('chartCategoriesLegend').innerHTML = labels.map((label, i) => {
-    const cat = state.categories.find(c => c.name === label);
-    const emoji = cat ? cat.emoji : '';
-    const pct = ((values[i] / total) * 100).toFixed(0);
-    return `
-      <div class="chart-legend-item">
-        <span class="chart-legend-dot" style="background:${colors[i]}"></span>
-        ${emoji} ${escapeHtml(label)} · ${pct}%
-      </div>
-    `;
-  }).join('');
+  if (legendEl) {
+    legendEl.innerHTML = labels.map((label, i) => {
+      const cat = state.categories.find(c => c.name === label);
+      const emoji = cat ? cat.emoji : '';
+      const pct = ((values[i] / total) * 100).toFixed(0);
+      return `
+        <div class="chart-legend-item">
+          <span class="chart-legend-dot" style="background:${colors[i]}"></span>
+          ${emoji} ${escapeHtml(label)} · R$ ${fmtMoney(values[i])} · ${pct}%
+        </div>
+      `;
+    }).join('');
+  }
 }
 
 // =================================================================
