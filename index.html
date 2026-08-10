@@ -3099,6 +3099,7 @@ function renderDiario() {
         </div>
           ${(() => {
            <div class="day-group-items">
+                       ${(() => {
             const catGroups = {};
             for (const it of items) {
               const cat = it.category || 'Outros';
