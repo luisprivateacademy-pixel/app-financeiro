@@ -834,6 +834,7 @@ body::after {
   color: var(--text-muted);
   margin-right: 2px;
 }
+
 /* Agrupamento LIMPO - sem card duplo */
 .cat-line {
   display: flex;
@@ -946,8 +947,7 @@ body::after {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 0;
-  z-index: 60;
+  right: 0;z-index: 60;
   background: rgba(18,18,26,0.85);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -1053,7 +1053,8 @@ body::after {
   border-top: 1px solid var(--border-strong);
 }
 .modal.open { transform: translateX(-50%) translateY(0); }
-.modal-handle {width: 40px;
+.modal-handle {
+  width: 40px;
   height: 4px;
   background: var(--border-strong);
   border-radius: 99px;
@@ -1895,8 +1896,7 @@ body::after {
 }
 .chart-legend {
   display: flex;
-  gap: 16px;
-  justify-content: center;
+  gap: 16px;justify-content: center;
   margin-top: 10px;
   flex-wrap: wrap;
 }
@@ -2002,7 +2002,8 @@ body::after {
 .hero-value {
   font-family: var(--display);
   font-size: 38px;
-  font-weight: 400;letter-spacing: -0.04em;
+  font-weight: 400;
+  letter-spacing: -0.04em;
   line-height: 1;
   position: relative;
 }
@@ -2611,9 +2612,6 @@ const EMOJI_LIST = [
   '🆚','🔠','🔡','🔢','🔣','🔤','#️⃣','*️⃣'
 ];
 
-// =================================================================
-// UTILS
-// =================================================================
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (s) => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -2678,9 +2676,6 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-// =================================================================
-// AUTH
-// =================================================================
 async function loginWithGoogle() {
   const btn = $('googleBtn');
   const label = $('googleBtnLabel');
@@ -2706,9 +2701,6 @@ async function logout() {
   location.reload();
 }
 
-// =================================================================
-// SUPABASE CRUD
-// =================================================================
 async function loadAllData() {
   const uid = state.user.id;
 
@@ -2837,8 +2829,7 @@ async function createRecurring(rec) {
   const { data, error } = await sb.from('recurrings').insert(rec).select().single();
   if (error) throw error;
   state.recurrings.push(data);
-  return data;
-}
+  return data;}
 async function deleteRecurring(id) {
   const { error } = await sb.from('recurrings').update({ active: false }).eq('id', id);
   if (error) throw error;
@@ -2882,9 +2873,6 @@ async function deleteCategory(id) {
   state.categories = state.categories.filter(c => c.id !== id);
 }
 
-// =================================================================
-// RENDER
-// =================================================================
 function render() {
   updateOverdueStatuses();
   renderHeader();
@@ -2941,7 +2929,8 @@ function renderFinanceiro() {
     if (b.status === 'partial') return s + Number(b.paid || 0);
     return s;
   }, 0);
-  const due = Math.max(total - paidSum, 0);const pct = total > 0 ? Math.round((paidSum / total) * 100) : 0;
+  const due = Math.max(total - paidSum, 0);
+  const pct = total > 0 ? Math.round((paidSum / total) * 100) : 0;
 
   const [intPart, decPart] = fmtMoney(total).split(',');
   $('finTotal').textContent = intPart;
@@ -3177,43 +3166,7 @@ function renderDiario() {
       openDailyEdit(el.dataset.id);
     });
   });
-}     
-  // Toggle accordion nos day-groups (colapsar/expandir)
-  list.querySelectorAll('.day-group-head').forEach(head => {
-    head.onclick = (e) => {
-      if (e.target.closest('.expense-item') || e.target.closest('.cat-line') || e.target.closest('.cat-sub')) return;
-      const group = head.closest('.day-group');
-      group.classList.toggle('collapsed');
-    };
-  });
-
-  list.querySelectorAll('.cat-line').forEach(line => {
-    line.onclick = (e) => {
-      e.stopPropagation();
-      line.classList.toggle('open');
-    };
-  });
-
-  list.querySelectorAll('.cat-sub').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openDailyEdit(el.dataset.id);
-    });
-  });
-
-  list.querySelectorAll('.expense-item').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openDailyEdit(el.dataset.id);
-    });
-  });
-  
-  list.querySelectorAll('.expense-item').forEach(el => {
-    el.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openDailyEdit(el.dataset.id);
-    });
-  });
+}
 
 let chartHistoryInstance = null;
 
@@ -3784,9 +3737,7 @@ async function saveBill() {
             }
           }
           if (firstDay) newBill.day = firstDay;
-        }
-
-        await createBill(newBill);
+        }await createBill(newBill);
         await generateRecurringInstances();
         toast(freq === 'weekly' ? '✓ Recorrente semanal criada' : '✓ Recorrente mensal criada');
       } else if (isInst) {
@@ -3933,7 +3884,8 @@ function openAddDaily() {
 function openDailyEdit(id) {
   const d = state.daily.find(x => x.id === id);
   if (!d) return;
-  state.editingDailyId = id;$('dailyModalTitle').textContent = 'Editar gasto';
+  state.editingDailyId = id;
+  $('dailyModalTitle').textContent = 'Editar gasto';
   $('dName').value = d.description || '';
   $('dValue').value = fmtMoney(d.value);
   $('dDate').value = d.date;
