@@ -3149,30 +3149,36 @@ function renderDiario() {
           })()}
         </div>
         
- list.querySelectorAll('.day-group-head').forEach(head => {
+  // Toggle accordion nos day-groups (colapsar/expandir)
+  list.querySelectorAll('.day-group-head').forEach(head => {
     head.onclick = (e) => {
-      if (e.target.closest('.expense-item') || e.target.closest('.cat-group')) return;
+      if (e.target.closest('.expense-item') || e.target.closest('.cat-line') || e.target.closest('.cat-sub')) return;
       const group = head.closest('.day-group');
       group.classList.toggle('collapsed');
     };
   });
 
-  list.querySelectorAll('.cat-group-head').forEach(head => {
-    head.onclick = (e) => {
+  list.querySelectorAll('.cat-line').forEach(line => {
+    line.onclick = (e) => {
       e.stopPropagation();
-      if (e.target.closest('.cat-sub-item')) return;
-      const group = head.closest('.cat-group');
-      group.classList.toggle('collapsed');
+      line.classList.toggle('open');
     };
   });
 
-  list.querySelectorAll('.cat-sub-item').forEach(el => {
+  list.querySelectorAll('.cat-sub').forEach(el => {
     el.addEventListener('click', (e) => {
       e.stopPropagation();
       openDailyEdit(el.dataset.id);
     });
   });
 
+  list.querySelectorAll('.expense-item').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openDailyEdit(el.dataset.id);
+    });
+  });
+  
   list.querySelectorAll('.expense-item').forEach(el => {
     el.addEventListener('click', (e) => {
       e.stopPropagation();
