@@ -586,6 +586,15 @@ body::after {
   margin-top: 2px;
   font-weight: 600;
 }
+.item-weekday {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 2px;
+  font-weight: 700;
+}
 
 .item-body {
   flex: 1;
@@ -938,8 +947,7 @@ body::after {
   border-top: 1px solid var(--border-strong);
 }
 .modal.open { transform: translateX(-50%) translateY(0); }
-.modal-handle {
-  width: 40px;
+.modal-handle {width: 40px;
   height: 4px;
   background: var(--border-strong);
   border-radius: 99px;
@@ -1888,8 +1896,7 @@ body::after {
 .hero-value {
   font-family: var(--display);
   font-size: 38px;
-  font-weight: 400;
-  letter-spacing: -0.04em;
+  font-weight: 400;letter-spacing: -0.04em;
   line-height: 1;
   position: relative;
 }
@@ -2088,15 +2095,6 @@ body::after {
           <div class="chart-legend-item"><span class="chart-legend-dot" style="background:#a78bfa"></span> Gastos</div>
         </div>
       </div>
-    </div>
-
-    <!-- Top 5 gastos -->
-    <div class="dash-section">
-      <div class="dash-section-head">
-        <div class="dash-section-title">Top 5 gastos</div>
-        <div class="dash-section-sub">Deste mês</div>
-      </div>
-      <div class="top-list" id="dashTop5"></div>
     </div>
 
     <!-- Por categoria - Contas -->
@@ -2452,8 +2450,8 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 // =================================================================
 const state = {
   user: null,
-  currentMonth: null,  // 'YYYY-MM'
-  bills: [],           // todas as bills carregadas (últimos 3-4 meses)
+  currentMonth: null,
+  bills: [],
   recurrings: [],
   daily: [],
   categories: [],
@@ -2608,7 +2606,6 @@ async function logout() {
 async function loadAllData() {
   const uid = state.user.id;
 
-  // Categorias
   const { data: cats, error: e1 } = await sb.from('categories')
     .select('*')
     .eq('user_id', uid)
@@ -2616,7 +2613,6 @@ async function loadAllData() {
   if (e1) throw e1;
   state.categories = cats || [];
 
-  // Recorrentes
   const { data: recs, error: e2 } = await sb.from('recurrings')
     .select('*')
     .eq('user_id', uid)
@@ -2624,7 +2620,6 @@ async function loadAllData() {
   if (e2) throw e2;
   state.recurrings = recs || [];
 
-  // Bills (carrega 12 meses: 3 passados + atual + 8 futuros)
   const now = realToday();
   const startMonth = monthKey(new Date(now.getFullYear(), now.getMonth() - 3, 1));
   const endMonth = monthKey(new Date(now.getFullYear(), now.getMonth() + 8, 1));
@@ -2637,7 +2632,6 @@ async function loadAllData() {
   if (e3) throw e3;
   state.bills = bills || [];
 
-  // Daily (últimos 3 meses)
   const startDate = dateStr(new Date(now.getFullYear(), now.getMonth() - 3, 1));
   const endDate = dateStr(new Date(now.getFullYear(), now.getMonth() + 1, 0));
   const { data: daily, error: e4 } = await sb.from('daily_expenses')
@@ -2649,7 +2643,6 @@ async function loadAllData() {
   if (e4) throw e4;
   state.daily = daily || [];
 
-  // Gerar instâncias de recorrentes que faltam
   await generateRecurringInstances();
 }
 
@@ -2667,7 +2660,6 @@ async function generateRecurringInstances() {
 
     for (const rec of state.recurrings) {
       if (rec.frequency === 'monthly') {
-        // Uma instância por mês
         const exists = monthBills.find(b => b.recurring_id === rec.id);
         if (!exists) {
           toCreate.push({
@@ -2684,7 +2676,6 @@ async function generateRecurringInstances() {
           });
         }
       } else if (rec.frequency === 'weekly') {
-        // Uma instância para cada ocorrência do weekday no mês
         const daysInMonth = new Date(year, month, 0).getDate();
         for (let d = 1; d <= daysInMonth; d++) {
           const date = new Date(year, month - 1, d);
@@ -2804,7 +2795,6 @@ function updateOverdueStatuses() {
       if ((b.status === 'pending' || b.status === 'partial') && b.day < now.getDate()) {
         if (b.status !== 'overdue') {
           b.status = 'overdue';
-          // Não persiste no banco pra economizar chamadas — atualiza local só. Ao editar, salva.
         }
       }
     }
@@ -2816,7 +2806,6 @@ function renderHeader() {
   $('monthName').textContent = MESES[month-1];
   $('monthYear').textContent = year;
 
-  // FAB label conforme página
   if (state.activePage === 'pageFinanceiro') {
     $('fabLabel').textContent = 'Nova conta';
     $('fab').classList.remove('hidden');
@@ -2834,7 +2823,6 @@ function renderHeader() {
   }
 }
 
-// -------- FINANCEIRO --------
 function getMonthBills(monthK) {
   return state.bills.filter(b => b.month_key === monthK);
 }
@@ -2847,8 +2835,7 @@ function renderFinanceiro() {
     if (b.status === 'partial') return s + Number(b.paid || 0);
     return s;
   }, 0);
-  const due = Math.max(total - paidSum, 0);
-  const pct = total > 0 ? Math.round((paidSum / total) * 100) : 0;
+  const due = Math.max(total - paidSum, 0);const pct = total > 0 ? Math.round((paidSum / total) * 100) : 0;
 
   const [intPart, decPart] = fmtMoney(total).split(',');
   $('finTotal').textContent = intPart;
@@ -2859,7 +2846,6 @@ function renderFinanceiro() {
   $('finPct').textContent = pct + '%';
   $('finProgressFill').style.width = pct + '%';
 
-  // Filtros
   const counts = {
     all: bills.length,
     pending: bills.filter(b => b.status === 'pending').length,
@@ -2873,7 +2859,6 @@ function renderFinanceiro() {
   $('cPartial').textContent = counts.partial;
   $('cPaid').textContent = counts.paid;
 
-  // Lista
   const list = $('billsList');
   let arr = bills.slice();
   if (state.filter !== 'all') arr = arr.filter(b => b.status === state.filter);
@@ -2905,11 +2890,17 @@ function renderFinanceiro() {
     const tagInst = b.installment_cur ? `<span class="item-tag installment">${b.installment_cur}/${b.installment_total}</span>` : '';
     const cat = state.categories.find(c => c.name === b.category);
     const catDisplay = cat ? `${cat.emoji||''} ${b.category}` : (b.category || '');
+
+    const { year: bYear, month: bMonth } = parseMonthKey(b.month_key);
+    const dateObj = new Date(bYear, bMonth - 1, b.day);
+    const weekdayAbrev = DIAS_SEMANA_ABREV[dateObj.getDay()];
+
     return `
       <div class="item ${isPaidClass} ${isOverdueClass}" data-id="${b.id}">
         <div class="item-date">
           <div class="item-day">${b.day}</div>
           <div class="item-month">${monthAbrev}</div>
+          <div class="item-weekday">${weekdayAbrev}</div>
         </div>
         <div class="item-body">
           <div class="item-name">${escapeHtml(b.name)}</div>
@@ -2932,7 +2923,6 @@ function renderFinanceiro() {
   });
 }
 
-// -------- DIÁRIO --------
 function getMonthDaily(monthK) {
   const { year, month } = parseMonthKey(monthK);
   const start = `${year}-${String(month).padStart(2,'0')}-01`;
@@ -2948,20 +2938,17 @@ function renderDiario() {
   $('diaCents').textContent = ',' + decPart;
   $('diaSub').textContent = `${arr.length} ${arr.length === 1 ? 'gasto registrado' : 'gastos registrados'}`;
 
-  // Hoje
   const todayStr = dateStr(realToday());
   const todayArr = state.daily.filter(d => d.date === todayStr);
   const todaySum = todayArr.reduce((s, d) => s + Number(d.value||0), 0);
   $('diaToday').textContent = fmtMoneyShort(todaySum);
 
-  // Média/dia
   const { year, month } = parseMonthKey(state.currentMonth);
   const daysInMonth = new Date(year, month, 0).getDate();
   const uniqueDays = new Set(arr.map(d => d.date)).size;
   const avg = uniqueDays > 0 ? total / uniqueDays : 0;
   $('diaAvg').textContent = fmtMoneyShort(avg);
 
-  // Lista agrupada por dia
   const list = $('dailyList');
   if (arr.length === 0) {
     list.innerHTML = `
@@ -2973,7 +2960,6 @@ function renderDiario() {
     return;
   }
 
-  // Agrupa por data
   const groups = {};
   for (const d of arr) {
     if (!groups[d.date]) groups[d.date] = [];
@@ -3025,10 +3011,8 @@ function renderDiario() {
     `;
   }).join('');
 
-  // Toggle accordion nos day-groups (colapsar/expandir)
   list.querySelectorAll('.day-group-head').forEach(head => {
     head.onclick = (e) => {
-      // Se o click foi num expense-item, deixa o item processar
       if (e.target.closest('.expense-item')) return;
       const group = head.closest('.day-group');
       group.classList.toggle('collapsed');
@@ -3043,10 +3027,8 @@ function renderDiario() {
   });
 }
 
-// -------- DASHBOARD V3 --------
 let chartHistoryInstance = null;
 
-// Config global do Chart.js (dark theme)
 function setupChartDefaults() {
   if (typeof Chart === 'undefined') return;
   Chart.defaults.font.family = 'Manrope, sans-serif';
@@ -3060,11 +3042,9 @@ function renderDash() {
   renderDashHero();
   renderDashCompare();
   renderDashHistoryChart();
-  renderDashTop5();
   renderDashCategoriesChart();
 }
 
-// --- Alerta de contas vencendo em 7 dias ---
 function renderDashAlert() {
   const alertEl = $('dashAlert');
   const now = realToday();
@@ -3074,7 +3054,6 @@ function renderDashAlert() {
   const { year, month } = parseMonthKey(currentKey);
   const daysInMonth = new Date(year, month, 0).getDate();
 
-  // Encontra contas do mês atual OU próximo, com dia entre hoje e hoje+7, ainda não pagas
   const upcoming = [];
   const bills = state.bills.filter(b =>
     (b.month_key === currentKey || b.month_key === nextKey) &&
@@ -3086,16 +3065,14 @@ function renderDashAlert() {
     if (b.month_key === currentKey) {
       daysUntil = b.day - today;
     } else if (b.month_key === nextKey) {
-      // Dias que faltam pro fim do mês + dia da conta no próximo mês
       daysUntil = (daysInMonth - today) + b.day;
     }
     if (daysUntil !== null && daysUntil >= 0 && daysUntil <= 3) {
       upcoming.push({ ...b, daysUntil });
     }
-    // Também inclui atrasadas do mês atual como "hoje" (0 dias, urgente!)
     if (b.status === 'overdue' && b.month_key === currentKey) {
       if (!upcoming.find(x => x.id === b.id)) {
-        upcoming.push({ ...b, daysUntil: -1 }); // -1 = atrasada
+        upcoming.push({ ...b, daysUntil: -1 });
       }
     }
   }
@@ -3137,7 +3114,6 @@ function renderDashAlert() {
   `;
 }
 
-// --- Hero: balanço do mês ---
 function renderDashHero() {
   const bills = getMonthBills(state.currentMonth);
   const daily = getMonthDaily(state.currentMonth);
@@ -3151,7 +3127,6 @@ function renderDashHero() {
   $('dashHeroSub').textContent = `${bills.length} ${bills.length === 1 ? 'conta' : 'contas'} · ${daily.length} ${daily.length === 1 ? 'gasto' : 'gastos'}`;
 }
 
-// --- Comparação mês atual vs mês anterior ---
 function renderDashCompare() {
   const currentBills = getMonthBills(state.currentMonth).reduce((s,b) => s + Number(b.value||0), 0);
   const currentDaily = getMonthDaily(state.currentMonth).reduce((s,d) => s + Number(d.value||0), 0);
@@ -3202,7 +3177,6 @@ function updateCompareCard(cardId, valueId, varId, current, previous) {
   }
 }
 
-// --- Gráfico de linha: histórico 6 meses ---
 function renderDashHistoryChart() {
   if (typeof Chart === 'undefined') return;
 
@@ -3223,7 +3197,6 @@ function renderDashHistoryChart() {
     dailyData.push(mDaily);
   }
 
-  // Destroi instância anterior (evita memory leak)
   if (chartHistoryInstance) {
     chartHistoryInstance.destroy();
     chartHistoryInstance = null;
@@ -3312,40 +3285,6 @@ function renderDashHistoryChart() {
   });
 }
 
-// --- Top 5 gastos individuais ---
-function renderDashTop5() {
-  const bills = getMonthBills(state.currentMonth).map(b => ({
-    name: b.name, value: Number(b.value||0), category: b.category, type: 'bill'
-  }));
-  const daily = getMonthDaily(state.currentMonth).map(d => ({
-    name: d.description || d.category || 'Gasto', value: Number(d.value||0), category: d.category, type: 'daily'
-  }));
-
-  const all = [...bills, ...daily].sort((a,b) => b.value - a.value).slice(0, 5);
-  const list = $('dashTop5');
-
-  if (all.length === 0) {
-    list.innerHTML = '<div class="dash-empty">Sem gastos registrados neste mês</div>';
-    return;
-  }
-
-  list.innerHTML = all.map((item, idx) => {
-    const cat = state.categories.find(c => c.name === item.category);
-    const emoji = cat ? cat.emoji : (item.type === 'bill' ? '📄' : '🧾');
-    return `
-      <div class="top-item">
-        <div class="top-rank">${idx + 1}</div>
-        <div class="top-body">
-          <div class="top-name">${emoji} ${escapeHtml(item.name)}</div>
-          <div class="top-cat">${escapeHtml(item.category || 'Sem categoria')}</div>
-        </div>
-        <div class="top-value">R$ ${fmtMoney(item.value)}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-// --- Donut charts de categorias (SEPARADOS: Contas + Diários) ---
 let chartCategoriesBillsInstance = null;
 let chartCategoriesDailyInstance = null;
 
@@ -3355,7 +3294,6 @@ function renderDashCategoriesChart() {
   const bills = getMonthBills(state.currentMonth);
   const daily = getMonthDaily(state.currentMonth);
 
-  // Renderiza gráfico de CONTAS
   renderSingleCategoryChart({
     canvasId: 'chartCategoriesBills',
     legendId: 'chartCategoriesBillsLegend',
@@ -3364,7 +3302,6 @@ function renderDashCategoriesChart() {
     instanceRef: 'chartCategoriesBillsInstance',
   });
 
-  // Renderiza gráfico de GASTOS DIÁRIOS
   renderSingleCategoryChart({
     canvasId: 'chartCategoriesDaily',
     legendId: 'chartCategoriesDailyLegend',
@@ -3378,7 +3315,6 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
   const canvas = $(canvasId);
   if (!canvas) return;
 
-  // Agrega por categoria
   const catTotals = {};
   for (const it of items) {
     const cat = it.category || 'Outros';
@@ -3386,7 +3322,6 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
   }
   const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
 
-  // Destroi instância anterior
   if (window[instanceRef]) {
     window[instanceRef].destroy();
     window[instanceRef] = null;
@@ -3401,7 +3336,6 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
     return;
   }
 
-  // Pega top 6, agrega o resto em "Outras"
   const top6 = sortedCats.slice(0, 6);
   const rest = sortedCats.slice(6);
   if (rest.length > 0) {
@@ -3457,7 +3391,6 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
     }
   });
 
-  // Legenda customizada
   const total = values.reduce((a,b)=>a+b,0);
   if (legendEl) {
     legendEl.innerHTML = labels.map((label, i) => {
@@ -3474,9 +3407,6 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
   }
 }
 
-// =================================================================
-// MODAL: BILL
-// =================================================================
 function renderCatPicker(pickerId, type, selected) {
   const picker = $(pickerId);
   const filtered = state.categories.filter(c => c.type === 'both' || c.type === type);
@@ -3623,7 +3553,6 @@ async function saveBill() {
 
   try {
     if (state.editingBillId) {
-      // EDIT
       const patch = {
         name, day, value,
         paid: status === 'partial' ? paidVal : 0,
@@ -3632,7 +3561,6 @@ async function saveBill() {
       await updateBill(state.editingBillId, patch);
       toast('Conta atualizada ✓');
     } else {
-      // ADD
       const newBill = {
         user_id: state.user.id,
         month_key: state.currentMonth,
@@ -3643,7 +3571,6 @@ async function saveBill() {
       };
 
       if (isRec) {
-        // Cria recorrente + a primeira instância vai ser gerada pelo ensureRecurring
         const recData = {
           user_id: state.user.id,
           name, value, category,
@@ -3655,7 +3582,6 @@ async function saveBill() {
         const newRec = await createRecurring(recData);
         newBill.recurring_id = newRec.id;
 
-        // Para semanal, ajusta o day pro próximo dia da semana no mês atual
         if (freq === 'weekly') {
           const { year, month } = parseMonthKey(state.currentMonth);
           const daysInMonth = new Date(year, month, 0).getDate();
@@ -3681,7 +3607,6 @@ async function saveBill() {
         const first = await createBill(newBill);
         newBill.installment_group_id = first.id;
 
-        // Cria as próximas parcelas
         const toCreate = [];
         let key = state.currentMonth;
         for (let i = 1; i <= (instTotal - instCur); i++) {
@@ -3735,7 +3660,6 @@ async function delBill() {
   });
 }
 
-// -------- DETAIL BILL --------
 function openBillDetail(id) {
   const b = state.bills.find(x => x.id === id);
   if (!b) return;
@@ -3806,9 +3730,6 @@ async function quickToggleStatus(id, newStatus) {
   }
 }
 
-// =================================================================
-// MODAL: DAILY
-// =================================================================
 function openAddDaily() {
   state.editingDailyId = null;
   $('dailyModalTitle').textContent = 'Novo gasto';
@@ -3824,8 +3745,7 @@ function openAddDaily() {
 function openDailyEdit(id) {
   const d = state.daily.find(x => x.id === id);
   if (!d) return;
-  state.editingDailyId = id;
-  $('dailyModalTitle').textContent = 'Editar gasto';
+  state.editingDailyId = id;$('dailyModalTitle').textContent = 'Editar gasto';
   $('dName').value = d.description || '';
   $('dValue').value = fmtMoney(d.value);
   $('dDate').value = d.date;
@@ -3885,9 +3805,6 @@ async function delDaily() {
   });
 }
 
-// =================================================================
-// MODAL: RECORRENTES
-// =================================================================
 function openRecList() {
   renderRecList();
   openModal('recModal');
@@ -3930,9 +3847,6 @@ function renderRecList() {
   });
 }
 
-// =================================================================
-// MODAL: CATEGORIAS
-// =================================================================
 function openCatList() {
   renderCatList();
   openModal('catModal');
@@ -4051,9 +3965,6 @@ async function saveCat() {
   }
 }
 
-// =================================================================
-// MODAL HELPERS
-// =================================================================
 function openModal(id) {
   const bdMap = {
     billModal: 'billBackdrop', detailModal: 'detailBackdrop',
@@ -4094,9 +4005,6 @@ function hideConfirm() {
   confirmCb = null;
 }
 
-// =================================================================
-// CURRENCY MASK - máscara automática pros inputs de valor
-// =================================================================
 function applyCurrencyMask(inputId) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -4108,7 +4016,6 @@ function applyCurrencyMask(inputId) {
     v = v.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     e.target.value = v;
   });
-  // Também mascara ao colar
   input.addEventListener('paste', (e) => {
     setTimeout(() => {
       let v = e.target.value.replace(/\D/g, '');
@@ -4121,9 +4028,6 @@ function applyCurrencyMask(inputId) {
   });
 }
 
-// =================================================================
-// PUSH NOTIFICATIONS
-// =================================================================
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -4202,13 +4106,11 @@ async function testNotification() {
 }
 
 async function enablePush() {
-  // 1) Verificar suporte
   if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
     toast('Seu navegador não suporta notificações push');
     return;
   }
 
-  // 2) Verificar se está bloqueado
   if (Notification.permission === 'denied') {
     toast('Notificações bloqueadas — libere nas configurações do site/app');
     return;
@@ -4217,7 +4119,6 @@ async function enablePush() {
   loading('Configurando notificações...');
 
   try {
-    // 3) Pedir permissão (se ainda não foi)
     if (Notification.permission !== 'granted') {
       const perm = await Notification.requestPermission();
       if (perm !== 'granted') {
@@ -4227,13 +4128,9 @@ async function enablePush() {
       }
     }
 
-    // 4) Aguardar service worker pronto
     const registration = await navigator.serviceWorker.ready;
-
-    // 5) Já tem subscription? Reaproveita.
     let subscription = await registration.pushManager.getSubscription();
 
-    // 6) Se não tem, cria uma nova
     if (!subscription) {
       subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
@@ -4241,14 +4138,12 @@ async function enablePush() {
       });
     }
 
-    // 7) Salvar no Supabase (extrai as chaves)
     const subJson = subscription.toJSON();
     const deviceLabel = navigator.userAgent.includes('iPhone') ? 'iPhone'
       : navigator.userAgent.includes('Android') ? 'Android'
       : navigator.userAgent.includes('Mac') ? 'Mac'
       : 'Web';
 
-    // Verifica se essa subscription já existe (por endpoint)
     const { data: existing } = await sb.from('push_subscriptions')
       .select('id')
       .eq('endpoint', subJson.endpoint)
@@ -4287,9 +4182,7 @@ async function disablePush() {
     const registration = await navigator.serviceWorker.ready;
     const subscription = await registration.pushManager.getSubscription();
     if (subscription) {
-      // Remove do Supabase
       await sb.from('push_subscriptions').delete().eq('endpoint', subscription.endpoint);
-      // Cancela no browser
       await subscription.unsubscribe();
     }
     loadingHide();
@@ -4314,14 +4207,9 @@ async function toggleNotifications() {
 }
 
 
-// =================================================================
-// EVENTS
-// =================================================================
 function bindEvents() {
-  // Login
   $('googleBtn').onclick = loginWithGoogle;
 
-  // Month nav
   $('prevMonth').onclick = () => { state.currentMonth = addMonths(state.currentMonth, -1); render(); };
   $('nextMonth').onclick = () => { state.currentMonth = addMonths(state.currentMonth, 1); render(); };
   $('monthDisplay').onclick = () => {
@@ -4332,23 +4220,19 @@ function bindEvents() {
     }
   };
 
-  // FAB
   $('fab').onclick = () => {
     if (state.activePage === 'pageFinanceiro') openAddBill();
     else if (state.activePage === 'pageDiario') openAddDaily();
   };
 
-  // Bottom nav
   document.querySelectorAll('.nav-item').forEach(item => {
     item.onclick = () => switchPage(item.dataset.page);
   });
 
-  // Menu
   $('menuBtn').onclick = openDrawer;
   $('drawerClose').onclick = closeDrawer;
   $('drawerBackdrop').onclick = closeDrawer;
 
-  // Modal backdrops
   ['billBackdrop','detailBackdrop','dailyBackdrop','recBackdrop','catBackdrop','catEditBackdrop'].forEach(bd => {
     const idMap = {
       billBackdrop: 'billModal', detailBackdrop: 'detailModal',
@@ -4361,7 +4245,6 @@ function bindEvents() {
     btn.onclick = () => closeModal(btn.dataset.close);
   });
 
-  // Bill modal
   $('saveBillBtn').onclick = saveBill;
   $('deleteBillBtn').onclick = delBill;
   document.querySelectorAll('#statusPills .status-pill').forEach(p => {
@@ -4390,11 +4273,9 @@ function bindEvents() {
     btn.onclick = () => setWeekday(parseInt(btn.dataset.wd));
   });
 
-  // Daily modal
   $('saveDailyBtn').onclick = saveDaily;
   $('deleteDailyBtn').onclick = delDaily;
 
-  // Filters
   document.querySelectorAll('.filter').forEach(f => {
     f.onclick = () => {
       document.querySelectorAll('.filter').forEach(x => x.classList.remove('active'));
@@ -4404,7 +4285,6 @@ function bindEvents() {
     };
   });
 
-  // Confirm
   $('confirmCancel').onclick = hideConfirm;
   $('confirmOk').onclick = async () => {
     const cb = confirmCb;
@@ -4412,7 +4292,6 @@ function bindEvents() {
     if (cb) await cb();
   };
 
-  // Drawer items
   $('mRecurring').onclick = () => { closeDrawer(); setTimeout(openRecList, 200); };
   $('mCategories').onclick = () => { closeDrawer(); setTimeout(openCatList, 200); };
   $('mNotifications').onclick = () => { closeDrawer(); setTimeout(toggleNotifications, 200); };
@@ -4430,16 +4309,13 @@ function bindEvents() {
     }, 200);
   };
 
-  // Categorias
   $('newCatBtn').onclick = openNewCat;
   $('saveCatBtn').onclick = saveCat;
 
-  // Segmentado do tipo da categoria (BUG FIX)
   document.querySelectorAll('#catTypeSeg .seg').forEach(seg => {
     seg.onclick = () => setCatType(seg.dataset.type);
   });
 
-  // Currency masks nos inputs de valor
   applyCurrencyMask('fValue');
   applyCurrencyMask('fPaid');
   applyCurrencyMask('dValue');
@@ -4452,9 +4328,6 @@ function switchPage(pageId) {
   render();
 }
 
-// =================================================================
-// INIT
-// =================================================================
 async function showApp() {
   $('splash').classList.add('hiding');
   setTimeout(() => {
@@ -4483,15 +4356,12 @@ function updateUserInfo() {
 async function init() {
   bindEvents();
 
-  // Verifica sessão
   const { data: { session } } = await sb.auth.getSession();
 
   if (!session) {
-    // Não logado - mostra splash
     return;
   }
 
-  // Logado - carrega app
   state.user = session.user;
   state.currentMonth = monthKey(realToday());
 
@@ -4508,7 +4378,6 @@ async function init() {
     loadingHide();
   }
 
-  // Listener de auth
   sb.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_OUT') {
       location.reload();
@@ -4516,7 +4385,6 @@ async function init() {
   });
 }
 
-// PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
