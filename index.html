@@ -967,7 +967,8 @@ body::after {
   align-items: center;
   gap: 4px;
   background: none;
-  border: none;color: var(--text-muted);
+  border: none;
+  color: var(--text-muted);
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s;
@@ -1026,8 +1027,7 @@ body::after {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);-webkit-backdrop-filter: blur(8px);
   z-index: 100;
   opacity: 0;
   pointer-events: none;
@@ -1936,7 +1936,8 @@ body::after {
 .dash-section-title {
   font-family: var(--display);
   font-style: italic;
-  font-size: 16px;font-weight: 500;
+  font-size: 16px;
+  font-weight: 500;
   letter-spacing: -0.01em;
 }
 .dash-section-sub {
@@ -1973,11 +1974,165 @@ body::after {
   font-size: 11px;
   color: var(--text-dim);
   font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s;
 }
+.chart-legend-item:active { background: rgba(255,255,255,0.05); }
 .chart-legend-dot {
   width: 8px;
   height: 8px;
   border-radius: 99px;
+}
+.chart-legend-chev {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+/* Container do donut com overlay central */
+.chart-container-donut {
+  position: relative;
+  height: 200px;
+  width: 100%;
+}
+.donut-center-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+.donut-center-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.donut-center-value {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.donut-center-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Modal de detalhes de categoria */
+.cat-modal-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.cat-modal-emoji {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: var(--bg-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.cat-modal-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.cat-modal-title {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 20px;
+  font-weight: 500;color: var(--text);
+}
+.cat-modal-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.cat-modal-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: rgba(196,255,71,0.06);
+  border: 1px solid rgba(196,255,71,0.15);
+  border-radius: 12px;
+  margin: 14px 0;
+}
+.cat-modal-total-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.cat-modal-total-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--accent);
+}
+.cat-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cat-modal-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.cat-modal-item:active { background: var(--bg-3); transform: scale(0.98); }
+.cat-modal-item-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+  padding-right: 10px;
+}
+.cat-modal-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cat-modal-item-date {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  font-family: var(--mono);
+}
+.cat-modal-item-value {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
 }
 
 /* Top 5 gastos */
@@ -2277,8 +2432,13 @@ body::after {
         <div class="dash-section-sub">Fixas & parcelas</div>
       </div>
       <div class="chart-wrap">
-        <div class="chart-container">
+        <div class="chart-container chart-container-donut">
           <canvas id="chartCategoriesBills"></canvas>
+          <div class="donut-center-overlay">
+            <div class="donut-center-label">Total</div>
+            <div class="donut-center-value" id="billsCenterValue">R$ 0</div>
+            <div class="donut-center-sub" id="billsCenterSub">0 categorias</div>
+          </div>
         </div>
         <div class="chart-legend" id="chartCategoriesBillsLegend"></div>
       </div>
@@ -2291,8 +2451,13 @@ body::after {
         <div class="dash-section-sub">Diário</div>
       </div>
       <div class="chart-wrap">
-        <div class="chart-container">
+        <div class="chart-container chart-container-donut">
           <canvas id="chartCategoriesDaily"></canvas>
+          <div class="donut-center-overlay">
+            <div class="donut-center-label">Total</div>
+            <div class="donut-center-value" id="dailyCenterValue">R$ 0</div>
+            <div class="donut-center-sub" id="dailyCenterSub">0 categorias</div>
+          </div>
         </div>
         <div class="chart-legend" id="chartCategoriesDailyLegend"></div>
       </div>
@@ -2313,8 +2478,13 @@ body::after {
         <button class="week-arrow" id="nextWeek" aria-label="Próxima semana">›</button>
       </div>
       <div class="chart-wrap">
-        <div class="chart-container">
+        <div class="chart-container chart-container-donut">
           <canvas id="chartWeekCategories"></canvas>
+          <div class="donut-center-overlay">
+            <div class="donut-center-label">Total</div>
+            <div class="donut-center-value" id="weekCenterValue">R$ 0</div>
+            <div class="donut-center-sub" id="weekCenterSub">0 categorias</div>
+          </div>
         </div>
         <div class="chart-legend" id="chartWeekCategoriesLegend"></div>
       </div>
@@ -2556,6 +2726,29 @@ body::after {
       </div>
     </div>
     <button class="btn" id="saveCatBtn">Salvar categoria</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: DETALHES DE CATEGORIA ============ -->
+<div class="modal-backdrop" id="catDetailBackdrop"></div>
+<div class="modal" id="catDetailModal">
+  <div class="modal-handle"></div>
+  <div class="modal-head">
+    <div class="cat-modal-head">
+      <div class="cat-modal-emoji" id="catDetailEmoji">📌</div>
+      <div class="cat-modal-title-wrap">
+        <div class="cat-modal-title" id="catDetailName">—</div>
+        <div class="cat-modal-sub" id="catDetailPeriod">—</div>
+      </div>
+    </div>
+    <button class="modal-close" data-close="catDetailModal">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="cat-modal-total">
+      <span class="cat-modal-total-label">Total</span>
+      <span class="cat-modal-total-value" id="catDetailTotal">R$ 0,00</span>
+    </div>
+    <div class="cat-modal-list" id="catDetailList"></div>
   </div>
 </div>
 
@@ -2892,8 +3085,7 @@ async function generateRecurringInstances() {
 
   const toCreate = [];
   for (const mk of monthsToCheck) {
-    const { year, month } = parseMonthKey(mk);
-    const monthBills = state.bills.filter(b => b.month_key === mk);
+    const { year, month } = parseMonthKey(mk);const monthBills = state.bills.filter(b => b.month_key === mk);
 
     for (const rec of state.recurrings) {
       if (rec.frequency === 'monthly') {
@@ -2905,7 +3097,8 @@ async function generateRecurringInstances() {
             month_key: mk,
             name: rec.name,
             day: rec.day || 1,
-            value: rec.value,paid: 0,
+            value: rec.value,
+            paid: 0,
             status: 'pending',
             category: rec.category,
             is_recurring: true,
@@ -3628,12 +3821,17 @@ function renderDashWeekChart() {
 
   // Renderiza o donut da semana usando a mesma função dos outros
   const items = getWeekDaily(state.currentWeekStart);
+  const periodLabel = 'Semana ' + formatWeekRange(state.currentWeekStart);
   renderSingleCategoryChart({
     canvasId: 'chartWeekCategories',
     legendId: 'chartWeekCategoriesLegend',
     items: items,
     valueField: 'value',
     instanceRef: 'chartWeekCategoriesInstance',
+    centerValueId: 'weekCenterValue',
+    centerSubId: 'weekCenterSub',
+    itemKind: 'daily',
+    periodLabel: periodLabel,
   });
 }
 
@@ -3643,6 +3841,9 @@ function renderDashCategoriesChart() {
   const bills = getMonthBills(state.currentMonth);
   const daily = getMonthDaily(state.currentMonth);
 
+  const { year, month } = parseMonthKey(state.currentMonth);
+  const periodLabel = `${MESES[month-1]} ${year}`;
+
   // Renderiza gráfico de CONTAS
   renderSingleCategoryChart({
     canvasId: 'chartCategoriesBills',
@@ -3650,6 +3851,10 @@ function renderDashCategoriesChart() {
     items: bills,
     valueField: 'value',
     instanceRef: 'chartCategoriesBillsInstance',
+    centerValueId: 'billsCenterValue',
+    centerSubId: 'billsCenterSub',
+    itemKind: 'bill',
+    periodLabel: periodLabel,
   });
 
   // Renderiza gráfico de GASTOS DIÁRIOS
@@ -3659,18 +3864,25 @@ function renderDashCategoriesChart() {
     items: daily,
     valueField: 'value',
     instanceRef: 'chartCategoriesDailyInstance',
+    centerValueId: 'dailyCenterValue',
+    centerSubId: 'dailyCenterSub',
+    itemKind: 'daily',
+    periodLabel: periodLabel,
   });
 }
 
-function renderSingleCategoryChart({ canvasId, legendId, items, valueField, instanceRef }) {
+function renderSingleCategoryChart({ canvasId, legendId, items, valueField, instanceRef, centerValueId, centerSubId, itemKind, periodLabel }) {
   const canvas = $(canvasId);
   if (!canvas) return;
 
-  // Agrega por categoria
+  // Agrega por categoria (guarda também os itens originais)
   const catTotals = {};
+  const catItemsMap = {};
   for (const it of items) {
     const cat = it.category || 'Outros';
     catTotals[cat] = (catTotals[cat] || 0) + Number(it[valueField] || 0);
+    if (!catItemsMap[cat]) catItemsMap[cat] = [];
+    catItemsMap[cat].push(it);
   }
   const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
 
@@ -3681,9 +3893,23 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
   }
 
   const legendEl = $(legendId);
+  const centerValueEl = centerValueId ? $(centerValueId) : null;
+  const centerSubEl = centerSubId ? $(centerSubId) : null;
+
+  // Total geral (soma de todas as categorias)
+  const grandTotal = Object.values(catTotals).reduce((a,b) => a+b, 0);
+  const catCount = sortedCats.length;
+
+  // Atualiza overlay central
+  if (centerValueEl) centerValueEl.textContent = grandTotal > 0 ? fmtMoneyShort(grandTotal) : 'R$ 0';
+  if (centerSubEl) {
+    if (catCount === 0) centerSubEl.textContent = 'Sem dados';
+    else if (catCount === 1) centerSubEl.textContent = '1 categoria';
+    else centerSubEl.textContent = `${catCount} categorias`;
+  }
 
   if (sortedCats.length === 0) {
-    if (legendEl) legendEl.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;width:100%;padding:8px;">Sem dados neste mês</div>';
+    if (legendEl) legendEl.innerHTML = '<div style="font-size:11px;color:var(--text-muted);text-align:center;width:100%;padding:8px;">Sem dados neste período</div>';
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     return;
@@ -3745,21 +3971,106 @@ function renderSingleCategoryChart({ canvasId, legendId, items, valueField, inst
     }
   });
 
-  // Legenda customizada
-  const total = values.reduce((a,b)=>a+b,0);
+  // Legenda customizada com clique
   if (legendEl) {
     legendEl.innerHTML = labels.map((label, i) => {
       const cat = state.categories.find(c => c.name === label);
       const emoji = cat ? cat.emoji : '';
-      const pct = ((values[i] / total) * 100).toFixed(0);
+      const pct = ((values[i] / grandTotal) * 100).toFixed(0);
       return `
-        <div class="chart-legend-item">
+        <div class="chart-legend-item" data-cat="${escapeHtml(label)}">
           <span class="chart-legend-dot" style="background:${colors[i]}"></span>
           ${emoji} ${escapeHtml(label)} · R$ ${fmtMoney(values[i])} · ${pct}%
+          <span class="chart-legend-chev">›</span>
         </div>
       `;
     }).join('');
+
+    // Bind de clique nos itens da legenda
+    legendEl.querySelectorAll('.chart-legend-item').forEach(el => {
+      el.onclick = () => {
+        const catName = el.dataset.cat;
+        // Se for "outras" agregada, não abre
+        if (catName.startsWith('+') && catName.endsWith('outras')) return;
+        const catItems = catItemsMap[catName] || [];
+        openCategoryDetail({
+          catName,
+          catItems,
+          periodLabel: periodLabel || '',
+          itemKind: itemKind || 'daily',
+        });
+      };
+    });
   }
+}
+
+// Modal de detalhes de uma categoria (contas OU gastos)
+function openCategoryDetail({ catName, catItems, periodLabel, itemKind }) {
+  const catObj = state.categories.find(c => c.name === catName);
+  const emoji = catObj ? catObj.emoji : '📌';
+
+  $('catDetailEmoji').textContent = emoji;
+  $('catDetailName').textContent = catName;
+
+  const countText = catItems.length === 1 ? '1 lançamento' : `${catItems.length} lançamentos`;
+  $('catDetailPeriod').textContent = `${periodLabel} · ${countText}`;
+
+  const total = catItems.reduce((s, x) => s + Number(x.value||0), 0);
+  $('catDetailTotal').textContent = 'R$ ' + fmtMoney(total);
+
+  // Ordena por data desc (gastos têm .date, contas têm .day/month_key)
+  const sorted = catItems.slice().sort((a, b) => {
+    if (itemKind === 'bill') {
+      // Contas: compara month_key + day
+      const ak = (a.month_key || '') + '-' + String(a.day||0).padStart(2,'0');
+      const bk = (b.month_key || '') + '-' + String(b.day||0).padStart(2,'0');
+      return bk.localeCompare(ak);
+    }
+    // Gastos: compara date
+    return (b.date || '').localeCompare(a.date || '');
+  });
+
+  const list = $('catDetailList');
+  list.innerHTML = sorted.map(item => {
+    let displayName, dateLabel;
+    if (itemKind === 'bill') {
+      displayName = item.name || catName;
+      const { year, month } = parseMonthKey(item.month_key);
+      const dt = new Date(year, month - 1, item.day);
+      const wd = DIAS_SEMANA_ABREV[dt.getDay()];
+      dateLabel = `${wd} ${item.day}/${String(month).padStart(2,'0')}/${year}`;
+    } else {
+      displayName = item.description || catName;
+      const dt = parseDate(item.date);
+      const wd = DIAS_SEMANA_ABREV[dt.getDay()];
+      const [y, m, d] = item.date.split('-');
+      dateLabel = `${wd} ${d}/${m}/${y}`;
+    }
+    return `
+      <div class="cat-modal-item" data-id="${item.id}" data-kind="${itemKind}">
+        <div class="cat-modal-item-body">
+          <div class="cat-modal-item-name">${escapeHtml(displayName)}</div>
+          <div class="cat-modal-item-date">${dateLabel}</div>
+        </div>
+        <div class="cat-modal-item-value">R$ ${fmtMoney(item.value)}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Clicar num item fecha o modal e abre a edição do item
+  list.querySelectorAll('.cat-modal-item').forEach(el => {
+    el.onclick = () => {
+      const id = el.dataset.id;
+      const kind = el.dataset.kind;
+      closeModal('catDetailModal');
+      setTimeout(() => {
+        if (kind === 'bill') openBillDetail(id);
+        else openDailyEdit(id);
+      }, 300);
+    };
+  });
+
+  openModal('catDetailModal');
 }
 
 // =================================================================
@@ -3803,9 +4114,7 @@ function openAddBill() {
   $('fInstCur').value = 1;
   $('fInstTotal').value = 2;
   setFrequency('monthly');
-  setWeekday(1);
-
-  renderCatPicker('billCatPicker', 'bill', null);
+  setWeekday(1);renderCatPicker('billCatPicker', 'bill', null);
 
   $('deleteBillBtn').classList.add('hidden');
   openModal('billModal');
@@ -3874,7 +4183,8 @@ function setFrequency(f) {
   state.billForm.frequency = f;
   document.querySelectorAll('#recurringOpts .segmented .seg').forEach(seg => {
     seg.classList.toggle('active', seg.dataset.freq === f);
-  });$('weeklyPicker').style.display = f === 'weekly' ? 'block' : 'none';
+  });
+  $('weeklyPicker').style.display = f === 'weekly' ? 'block' : 'none';
 }
 function setWeekday(wd) {
   state.billForm.weekday = wd;
@@ -4346,6 +4656,7 @@ function openModal(id) {
     billModal: 'billBackdrop', detailModal: 'detailBackdrop',
     dailyModal: 'dailyBackdrop', recModal: 'recBackdrop',
     catModal: 'catBackdrop', catEditModal: 'catEditBackdrop',
+    catDetailModal: 'catDetailBackdrop',
   };
   $(id).classList.add('open');
   $(bdMap[id]).classList.add('open');
@@ -4355,6 +4666,7 @@ function closeModal(id) {
     billModal: 'billBackdrop', detailModal: 'detailBackdrop',
     dailyModal: 'dailyBackdrop', recModal: 'recBackdrop',
     catModal: 'catBackdrop', catEditModal: 'catEditBackdrop',
+    catDetailModal: 'catDetailBackdrop',
   };
   $(id).classList.remove('open');
   $(bdMap[id]).classList.remove('open');
@@ -4636,11 +4948,12 @@ function bindEvents() {
   $('drawerBackdrop').onclick = closeDrawer;
 
   // Modal backdrops
-  ['billBackdrop','detailBackdrop','dailyBackdrop','recBackdrop','catBackdrop','catEditBackdrop'].forEach(bd => {
+  ['billBackdrop','detailBackdrop','dailyBackdrop','recBackdrop','catBackdrop','catEditBackdrop','catDetailBackdrop'].forEach(bd => {
     const idMap = {
       billBackdrop: 'billModal', detailBackdrop: 'detailModal',
       dailyBackdrop: 'dailyModal', recBackdrop: 'recModal',
       catBackdrop: 'catModal', catEditBackdrop: 'catEditModal',
+      catDetailBackdrop: 'catDetailModal',
     };
     $(bd).onclick = () => closeModal(idMap[bd]);
   });
